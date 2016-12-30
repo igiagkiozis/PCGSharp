@@ -67,7 +67,7 @@ namespace PCGSharp.Tests {
     public void CorrectnessTests(int seed, int tablePow2, int advancePow2) {
       var list = RandomHelpers.ReadPCGExtendedOutput(seed, tablePow2, advancePow2);
       Assert.AreEqual(10000, list.Count);
-      var pcg = new PCGExtended(seed, tablePow2, advancePow2);
+      var pcg = new PCGExtended((ulong)seed, 721347520444481703, tablePow2, advancePow2);
       for(int i = 0; i < 10000; i++) {
         var aVal = pcg.NextUInt();
         var cVal = list[i];
@@ -77,9 +77,9 @@ namespace PCGSharp.Tests {
 
     [Test]
     public void ReproducibilityTest() {
-      var r1 = new PCGExtended(11);
+      var r1 = new PCGExtended(11,1);
       var r1v = r1.NextInts(N);
-      var r2 = new PCGExtended(11);
+      var r2 = new PCGExtended(11,1);
       var r2v = r2.NextInts(N);
       for(int i = 0; i < N; i++) {
         Assert.That(r1v[i], Is.EqualTo(r2v[i]));

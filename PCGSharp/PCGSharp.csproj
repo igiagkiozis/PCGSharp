@@ -34,7 +34,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\PCG.cs" />
     <Compile Include="Source\PCGExtended.cs" />
-    <Compile Include="Source\RandomSeed.cs" />
+    <Compile Include="Source\PCGSeed.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

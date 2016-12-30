@@ -64,6 +64,8 @@ namespace PCGSharp {
   public class PCG {
 
     ulong _state;
+    // This shifted to the left and or'ed with 1ul results in the default increment.
+    const ulong _shiftedIncrement = 721347520444481703ul;
     ulong _increment = 1442695040888963407ul;
     const ulong _multiplier = 6364136223846793005ul;
     const double _toDouble01 = 1.0 / 4294967296.0;
@@ -79,7 +81,7 @@ namespace PCGSharp {
     public static PCG Default {
       get {
         if(DefaultInstance == null) {
-          DefaultInstance = new PCG(RandomSeed.GuidBasedSeed(),RandomSeed.GuidBasedSeed());
+          DefaultInstance = new PCG(PCGSeed.GuidBasedSeed(),_shiftedIncrement);
         }
         return DefaultInstance;
       }
@@ -354,23 +356,35 @@ namespace PCGSharp {
       return 64;
     }
 
-    public PCG() {
-      Initialize(42,54);
+    public void SetStream(int sequence) {
+      SetStream((ulong)sequence);
     }
 
-    public PCG(int seed) {
-      Initialize((ulong)seed, 54);
+    public void SetStream(ulong sequence) {
+      _increment = (sequence << 1) | 1;
     }
 
-    public PCG(int seed, int sequence) {
-      Initialize((ulong)seed, (ulong)sequence);
+    public PCG() : this(PCGSeed.GuidBasedSeed(), _shiftedIncrement) {
     }
 
-    void Initialize(ulong initstate, ulong initseq) {
+    public PCG(int seed) : this((ulong)seed, _shiftedIncrement) {
+    }
+
+    public PCG(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
+    }
+
+    public PCG(ulong seed) : this(seed, _shiftedIncrement) {
+    }
+
+    public PCG(ulong seed, ulong sequence) {
+      Initialize(seed, sequence);
+    }
+
+    void Initialize(ulong seed, ulong initseq) {
       _state = 0ul;
-      _increment = (initseq << 1) | 1ul;
+      SetStream(initseq);
       NextUInt();
-      _state += initstate;
+      _state += seed;
       NextUInt();
     }
 

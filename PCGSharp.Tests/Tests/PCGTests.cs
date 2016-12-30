@@ -54,9 +54,9 @@ namespace PCGSharp.Tests {
 
     [Test]
     public void ReproducibilityTest() {
-      var r1 = new PCGExtended(11);
+      var r1 = new PCGExtended(11,1);
       var r1v = r1.NextInts(N);
-      var r2 = new PCGExtended(11);
+      var r2 = new PCGExtended(11,1);
       var r2v = r2.NextInts(N);
       for(int i = 0; i < N; i++) {
         Assert.That(r1v[i], Is.EqualTo(r2v[i]));

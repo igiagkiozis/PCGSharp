@@ -84,6 +84,8 @@ namespace PCGSharp {
     int _table_size;
 
     ulong _state;
+    // This shifted to the left and or'ed with 1ul results in the default increment.
+    const ulong _shiftedIncrement = 721347520444481703ul;
     ulong _increment = 1442695040888963407ul;
     const ulong _multiplier = 6364136223846793005ul;
     const uint _pcg_multiplier = 747796405u;
@@ -106,7 +108,7 @@ namespace PCGSharp {
     public static PCGExtended Default {
       get {
         if(DefaultInstance == null) {
-          DefaultInstance = new PCGExtended(RandomSeed.GuidBasedSeed(),RandomSeed.GuidBasedSeed());
+          DefaultInstance = new PCGExtended(PCGSeed.GuidBasedSeed(), _shiftedIncrement);
         }
         return DefaultInstance;
       }
@@ -413,44 +415,44 @@ namespace PCGSharp {
       _increment = (sequence << 1) | 1;
     }
 
-    const ulong _defaultSeed = 42;
-    ulong _seed;
-    public PCGExtended() {
-      _seed = _defaultSeed;
-      Initialize();
+
+    public PCGExtended() : this(PCGSeed.GuidBasedSeed(), _shiftedIncrement) {
     }
 
-    public PCGExtended(int seed) {
-      _seed = (ulong)seed;
-      Initialize();
+    public PCGExtended(int seed) : this((ulong)seed, _shiftedIncrement) {
     }
 
-    public PCGExtended(int seed, int sequence) {
-      _seed = (ulong)seed;
-      _increment = (ulong)(sequence << 1) | 1ul;
-      Initialize();
+    public PCGExtended(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
     }
 
     public PCGExtended(int seed, int tablePow2, int advancePow2) {
       _table_pow2 = tablePow2;
       _advance_pow2 = advancePow2;
-      _seed = (ulong)seed;
-      Initialize();
+      Initialize((ulong)seed, _shiftedIncrement);
     }
 
-    public PCGExtended(ulong seed) {
-      _seed = seed;
-      Initialize();
+    public PCGExtended(int seed, int sequence, int tablePow2, int advancePow2) {
+      _table_pow2 = tablePow2;
+      _advance_pow2 = advancePow2;
+      Initialize((ulong)seed, (ulong)sequence);
+    }
+
+    public PCGExtended(ulong seed, ulong sequence, int tablePow2, int advancePow2) {
+      _table_pow2 = tablePow2;
+      _advance_pow2 = advancePow2;
+      Initialize(seed, sequence);
+    }
+
+    public PCGExtended(ulong seed) : this(seed, _shiftedIncrement) {
     }
 
     public PCGExtended(ulong seed, ulong sequence) {
-      _increment = (sequence << 1) | 1ul;
-      _seed = seed;
-      Initialize();
+      Initialize(seed, sequence);
     }
 
-    void Initialize() {
-      _state = _seed + _increment;
+    void Initialize(ulong seed, ulong sequence) {
+      SetStream(sequence);
+      _state = seed + _increment;
       _state = Bump(_state);
 
       _table_size = (1 << _table_pow2);
