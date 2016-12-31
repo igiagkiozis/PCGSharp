@@ -3,7 +3,7 @@ solution: PCGSharp.sln
 
 install:
   - nuget restore PCGSharp.sln
-  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+  - nuget install NUnit.Runners -Version 3.5.0 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release PCGSharp.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./PCGSharp.Tests/bin/Release/MyProject.Tests.dll
+  - PCGSharp.sln mono ./testrunner/NUnit.ConsoleRunner.3.5.0/tools/nunit3-console.exe ./PCGSharp.Tests/bin/Release/PCGSharp.Tests.dl

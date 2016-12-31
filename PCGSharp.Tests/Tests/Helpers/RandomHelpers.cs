@@ -30,13 +30,15 @@ namespace PCGSharp.Tests {
   public static class RandomHelpers {
 
     public static List<uint> ReadPCGOutput(int seed) {
-      var fileName = string.Format("Data/pcg32_seed_{0}.txt", seed);
+      var dir = Path.GetDirectoryName(typeof(RandomHelpers).Assembly.Location);
+      var fileName = string.Format("{0}/Data/pcg32_seed_{1}.txt", dir, seed);
       return ReadPCGValuesFile(fileName);
     }
 
     public static List<uint> ReadPCGExtendedOutput(int seed, int tablePow2, int advancePow2) {
-      var fileName = string.Format("Data/pcg32_k_table_pow2_{0}_advance_pow2_{1}_seed_{2}.txt", 
-        tablePow2, advancePow2, seed);
+      var dir = Path.GetDirectoryName(typeof(RandomHelpers).Assembly.Location);
+      var fileName = string.Format("{0}/Data/pcg32_k_table_pow2_{1}_advance_pow2_{2}_seed_{3}.txt", 
+        dir, tablePow2, advancePow2, seed);
       return ReadPCGValuesFile(fileName);
     }
 

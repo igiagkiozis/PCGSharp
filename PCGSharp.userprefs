@@ -1,24 +1,15 @@
 ﻿<Properties StartupItem="PCGSharp/PCGSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="PCGSharp/Source/PCGExtended.cs">
     <Files>
-      <File FileName="PCGSharp/Source/PCG.cs" Line="57" Column="1" />
+      <File FileName="PCGSharp/Source/PCG.cs" Line="1" Column="1" />
       <File FileName="PCGSharp/Source/PCGExtended.cs" Line="56" Column="3" />
-      <File FileName="PCGSharp.Tests/Tests/PCGExtendedTests.cs" Line="70" Column="40" />
-      <File FileName="PCGSharp/Source/PCGSeed.cs" Line="28" Column="30" />
-      <File FileName="PCGSharp.Tests/Tests/PCGTests.cs" Line="59" Column="36" />
-      <File FileName="PCGSharp.Tests/Tests/Helpers/RandomHelpers.cs" Line="4" Column="41" />
-      <File FileName="PCGSharp/Properties/AssemblyInfo.cs" Line="18" Column="49" />
+      <File FileName="PCGSharp.Tests/Tests/PCGExtendedTests.cs" Line="1" Column="1" />
+      <File FileName="PCGSharp/Source/PCGSeed.cs" Line="1" Column="1" />
+      <File FileName="PCGSharp.Tests/Tests/PCGTests.cs" Line="1" Column="1" />
+      <File FileName="PCGSharp.Tests/Tests/Helpers/RandomHelpers.cs" Line="1" Column="1" />
+      <File FileName="PCGSharp/Properties/AssemblyInfo.cs" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State name="__root__">
-          <Node name="PCGSharp" expanded="True">
-            <Node name="PCGSharp.Tests" expanded="True" />
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
