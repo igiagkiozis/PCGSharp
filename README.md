@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/ThelDoctor/PCGSharp.svg)](https://travis-ci.org/ThelDoctor/PCGSharp)
-
-https://travis-ci.org/ThelDoctor/PCGSharp/builds
+[![Build Status](https://travis-ci.org/ThelDoctor/PCGSharp.svg?branch=master)](https://travis-ci.org/ThelDoctor/PCGSharp)
 
 # PCGSharp
 
