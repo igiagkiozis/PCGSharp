@@ -1,11 +1,9 @@
 language: csharp
 solution: PCGSharp.sln
 
-language: csharp
-solution: PCGSharp.Tests.sln
 install:
-  - nuget restore PCGSharp.Tests.sln
+  - nuget restore PCGSharp.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release PCGSharp.Tests.sln
+  - xbuild /p:Configuration=Release PCGSharp.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./PCGSharp.Tests/bin/Release/MyProject.Tests.dll
