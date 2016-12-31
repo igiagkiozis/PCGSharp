@@ -168,12 +168,12 @@ int main()
 }
 ```
 As of the time of this writing, the [original version of PCG Extened in C++](https://github.com/imneme/pcg-cpp) had a 
-minor ```typedef``` bug, namely at lines 1703 and 1704 of the [template header](https://github.com/imneme/pcg-cpp/blob/master/include/pcg_random.hpp)
+minor ```typedef``` bug, namely at lines 1703 and 1704 of this [template header](https://github.com/imneme/pcg-cpp/blob/master/include/pcg_random.hpp) read
 ```cpp
 typedef pcg_engines::ext_setseq_xsh_rr_64_32<6,16,true>     pcg32_k2;
 typedef pcg_engines::ext_oneseq_xsh_rs_64_32<6,32,true>     pcg32_k2_fast;
 ```
-should be
+however they should be
 ```cpp
 typedef pcg_engines::ext_setseq_xsh_rr_64_32<1,16,true>     pcg32_k2;
 typedef pcg_engines::ext_oneseq_xsh_rs_64_32<1,32,true>     pcg32_k2_fast;
