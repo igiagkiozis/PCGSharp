@@ -26,7 +26,7 @@ using NUnit.Framework;
 
 namespace PCGSharp.Tests {
 
-  public class PCGExtendedTests {
+  public class PcgExtendedTests {
 
     const int N = 10000;
 
@@ -65,9 +65,9 @@ namespace PCGSharp.Tests {
 
     [Test, TestCaseSource("PCGExtendedTestCases")]
     public void CorrectnessTests(int seed, int tablePow2, int advancePow2) {
-      var list = RandomHelpers.ReadPCGExtendedOutput(seed, tablePow2, advancePow2);
+      var list = RandomHelpers.ReadPcgExtendedOutput(seed, tablePow2, advancePow2);
       Assert.AreEqual(10000, list.Count);
-      var pcg = new PCGExtended((ulong)seed, 721347520444481703, tablePow2, advancePow2);
+      var pcg = new PcgExtended((ulong)seed, 721347520444481703, tablePow2, advancePow2);
       for(int i = 0; i < 10000; i++) {
         var aVal = pcg.NextUInt();
         var cVal = list[i];
@@ -77,9 +77,9 @@ namespace PCGSharp.Tests {
 
     [Test]
     public void ReproducibilityTest() {
-      var r1 = new PCGExtended(11,1);
+      var r1 = new PcgExtended(11,1);
       var r1v = r1.NextInts(N);
-      var r2 = new PCGExtended(11,1);
+      var r2 = new PcgExtended(11,1);
       var r2v = r2.NextInts(N);
       for(int i = 0; i < N; i++) {
         Assert.That(r1v[i], Is.EqualTo(r2v[i]));
@@ -88,7 +88,7 @@ namespace PCGSharp.Tests {
 
     [Test]
     public void NextFloatBoundsTest() {
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       for(int i = 0; i < N; i++) {
         var aVal = pcg.NextFloat();
         Assert.That(aVal <= 1.0f);
@@ -99,7 +99,7 @@ namespace PCGSharp.Tests {
     [Test]
     public void NextFloatUpperBoundTest() {
       var maxV = 2.5f;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       for(int i = 0; i < N; i++) {
         var aVal = pcg.NextFloat(maxV);
         Assert.That(aVal <= maxV);
@@ -111,7 +111,7 @@ namespace PCGSharp.Tests {
     public void NextFloatIntervalTest() {
       var minV = -10f;
       var maxV = 2.5f;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       for(int i = 0; i < N; i++) {
         var aVal = pcg.NextFloat(minV, maxV);
         Assert.That(aVal <= maxV);
@@ -124,7 +124,7 @@ namespace PCGSharp.Tests {
     public void NextFloatMeanTest(float val) {
       var minV = -val;
       var maxV = val;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       var rsum = 0.0f;
       var lTol = 0.1f * (maxV - minV);
       for(int i = 0; i < N; i++) {
@@ -136,7 +136,7 @@ namespace PCGSharp.Tests {
 
     [Test]
     public void NextDoubleBoundsTest() {
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       for(int i = 0; i < N; i++) {
         var aVal = pcg.NextDouble();
         Assert.That(aVal <= 1.0);
@@ -147,7 +147,7 @@ namespace PCGSharp.Tests {
     [Test]
     public void NextDoubleUpperBoundTest() {
       var maxV = 2.5;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       for(int i = 0; i < N; i++) {
         var aVal = pcg.NextDouble(maxV);
         Assert.That(aVal <= maxV);
@@ -159,7 +159,7 @@ namespace PCGSharp.Tests {
     public void NextDoubleIntervalTest() {
       var minV = -10;
       var maxV = 2.5;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       for(int i = 0; i < N; i++) {
         var aVal = pcg.NextDouble(minV, maxV);
         Assert.That(aVal <= maxV);
@@ -172,7 +172,7 @@ namespace PCGSharp.Tests {
     public void NextDoubleMeanTest(float val) {
       var minV = -val;
       var maxV = val;
-      var pcg = new PCGExtended(10);
+      var pcg = new PcgExtended(10);
       var rsum = 0.0;
       var lTol = 0.1 * (maxV - minV);
       for(int i = 0; i < N; i++) {
@@ -185,7 +185,7 @@ namespace PCGSharp.Tests {
     [Test]
     public void NextIntUpperBoundTest() {
       var maxV = 10;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       var lbCount = 0;
       var ubCount = 0;
       for(int i = 0; i < N; i++) {
@@ -205,7 +205,7 @@ namespace PCGSharp.Tests {
     public void NextIntIntervalTest() {
       var minV = -20;
       var maxV = 10;
-      var pcg = new PCGExtended(42);
+      var pcg = new PcgExtended(42);
       var lbCount = 0;
       var ubCount = 0;
       for(int i = 0; i < N; i++) {

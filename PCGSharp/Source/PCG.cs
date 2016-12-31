@@ -61,29 +61,29 @@ namespace PCGSharp {
   /// To understand how exactly this generator works read this:
   /// http://www.pcg-random.org/pdf/toms-oneill-pcg-family-v1.02.pdf 
   /// </summary>
-  public class PCG {
+  public class Pcg {
 
     ulong _state;
     // This shifted to the left and or'ed with 1ul results in the default increment.
-    const ulong _shiftedIncrement = 721347520444481703ul;
+    const ulong ShiftedIncrement = 721347520444481703ul;
     ulong _increment = 1442695040888963407ul;
-    const ulong _multiplier = 6364136223846793005ul;
-    const double _toDouble01 = 1.0 / 4294967296.0;
+    const ulong Multiplier = 6364136223846793005ul;
+    const double ToDouble01 = 1.0 / 4294967296.0;
 
     // This attribute ensures that every thread will get its own instance of PCG.
     // An alternative, since PCG supports streams, is to use a different stream per
     // thread. 
     [ThreadStatic]
-    static PCG DefaultInstance;
+    static Pcg _defaultInstance;
     /// <summary>
     /// Default instance.
     /// </summary>
-    public static PCG Default {
+    public static Pcg Default {
       get {
-        if(DefaultInstance == null) {
-          DefaultInstance = new PCG(PCGSeed.GuidBasedSeed(),_shiftedIncrement);
+        if(_defaultInstance == null) {
+          _defaultInstance = new Pcg(PCGSeed.GuidBasedSeed(),ShiftedIncrement);
         }
-        return DefaultInstance;
+        return _defaultInstance;
       }
     }
 
@@ -127,7 +127,7 @@ namespace PCGSharp {
       }
       return resultA;
     }
-
+    
     public int[] NextInts(int count, int maxExclusive) {
       if(count <= 0)
         throw new ArgumentException("Zero count");
@@ -154,7 +154,7 @@ namespace PCGSharp {
 
     public uint NextUInt() {
       ulong oldState = _state;
-      _state = unchecked(oldState * _multiplier + _increment);
+      _state = unchecked(oldState * Multiplier + _increment);
       uint xorShifted = (uint)(((oldState >> 18) ^ oldState) >> 27);
       int rot = (int)(oldState >> 59);
       uint result = (xorShifted >> rot) | (xorShifted << ((-rot) & 31));
@@ -219,21 +219,21 @@ namespace PCGSharp {
     }
 
     public float NextFloat() {
-      return (float)(NextUInt() * _toDouble01);
+      return (float)(NextUInt() * ToDouble01);
     }
 
     public float NextFloat(float maxInclusive) {
       if(maxInclusive <= 0)
         throw new ArgumentException("Max must be larger than 0");
 
-      return (float)(NextUInt() * _toDouble01) * maxInclusive;
+      return (float)(NextUInt() * ToDouble01) * maxInclusive;
     }
 
     public float NextFloat(float minInclusive, float maxInclusive) {
       if(maxInclusive <= minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
-      return (float)(NextUInt() * _toDouble01) * (maxInclusive-minInclusive) + minInclusive;
+      return (float)(NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
     }
 
     public float[] NextFloats(int count) {
@@ -270,21 +270,21 @@ namespace PCGSharp {
     }
 
     public double NextDouble() {
-      return (NextUInt() * _toDouble01);
+      return (NextUInt() * ToDouble01);
     }
 
     public double NextDouble(double maxInclusive) {
       if(maxInclusive <= 0)
         throw new ArgumentException("Max must be larger than 0");
 
-      return (NextUInt() * _toDouble01) * maxInclusive;
+      return (NextUInt() * ToDouble01) * maxInclusive;
     }
 
     public double NextDouble(double minInclusive, double maxInclusive) {
       if(maxInclusive <= minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
-      return (NextUInt() * _toDouble01) * (maxInclusive-minInclusive) + minInclusive;
+      return (NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
     }
 
     public double[] NextDoubles(int count) {
@@ -364,19 +364,23 @@ namespace PCGSharp {
       _increment = (sequence << 1) | 1;
     }
 
-    public PCG() : this(PCGSeed.GuidBasedSeed(), _shiftedIncrement) {
+    public ulong CurrentStream() {
+      return (_increment >> 1);
     }
 
-    public PCG(int seed) : this((ulong)seed, _shiftedIncrement) {
+    public Pcg() : this(PCGSeed.GuidBasedSeed(), ShiftedIncrement) {
     }
 
-    public PCG(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
+    public Pcg(int seed) : this((ulong)seed, ShiftedIncrement) {
     }
 
-    public PCG(ulong seed) : this(seed, _shiftedIncrement) {
+    public Pcg(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
     }
 
-    public PCG(ulong seed, ulong sequence) {
+    public Pcg(ulong seed) : this(seed, ShiftedIncrement) {
+    }
+
+    public Pcg(ulong seed, ulong sequence) {
       Initialize(seed, sequence);
     }
 
