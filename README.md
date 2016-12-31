@@ -185,6 +185,7 @@ typedef pcg_engines::ext_oneseq_xsh_rs_64_32<1,32,true>     pcg32_k2_fast;
 MIT License
 
 Copyright (c) 2016 Bismur Studios Ltd.
+
 Copyright (c) 2016 Ioannis Giagkiozis
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
