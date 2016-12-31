@@ -1,13 +1,13 @@
 ﻿<Properties StartupItem="PCGSharp/PCGSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PCGSharp/Source/PCGExtended.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PCGSharp.Tests/Tests/Helpers/RandomHelpers.cs">
     <Files>
       <File FileName="PCGSharp/Source/PCG.cs" Line="1" Column="1" />
       <File FileName="PCGSharp/Source/PCGExtended.cs" Line="56" Column="3" />
       <File FileName="PCGSharp.Tests/Tests/PCGExtendedTests.cs" Line="1" Column="1" />
       <File FileName="PCGSharp/Source/PCGSeed.cs" Line="1" Column="1" />
       <File FileName="PCGSharp.Tests/Tests/PCGTests.cs" Line="1" Column="1" />
-      <File FileName="PCGSharp.Tests/Tests/Helpers/RandomHelpers.cs" Line="1" Column="1" />
+      <File FileName="PCGSharp.Tests/Tests/Helpers/RandomHelpers.cs" Line="41" Column="14" />
       <File FileName="PCGSharp/Properties/AssemblyInfo.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
