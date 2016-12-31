@@ -1,3 +1,4 @@
+[![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ThelDoctor/PCGSharp/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/ThelDoctor/PCGSharp.svg?branch=master)](https://travis-ci.org/ThelDoctor/PCGSharp)
 
 # PCGSharp
