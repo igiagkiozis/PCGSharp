@@ -1,7 +1,7 @@
 [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ThelDoctor/PCGSharp/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/ThelDoctor/PCGSharp.svg?branch=master)](https://travis-ci.org/ThelDoctor/PCGSharp)
 [![Build status](https://ci.appveyor.com/api/projects/status/rw0tma0eucs45fi5/branch/master?svg=true)](https://ci.appveyor.com/project/ThelDoctor/pcgsharp/branch/master)
-[![Tests Status](http://flauschig.ch/batch.php?type=tests&account=ThelDoctor&slug=PCGSharp)]
+![Tests Status](http://flauschig.ch/batch.php?type=tests&account=ThelDoctor&slug=PCGSharp)
 
 
 # PCGSharp - PCG Random Generator for C# .NET >= 2.0 and Unity3D
