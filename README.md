@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/ThelDoctor/PCGSharp.svg)](https://travis-ci.org/ThelDoctor/PCGSharp)
+
+https://travis-ci.org/ThelDoctor/PCGSharp/builds
+
 # PCGSharp
 
 Permuted Congruential Generator (PCG) for C# for .NET 2.0 and above
