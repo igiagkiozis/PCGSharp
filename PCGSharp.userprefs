@@ -1,1 +1,32 @@
-﻿<Properties StartupItem="PCGSharp/PCGSharp.csproj" />
+﻿<Properties StartupItem="PCGSharp/PCGSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PCGSharp/Source/PCGExtended.cs">
+    <Files>
+      <File FileName="PCGSharp/Source/PCG.cs" Line="57" Column="1" />
+      <File FileName="PCGSharp/Source/PCGExtended.cs" Line="56" Column="3" />
+      <File FileName="PCGSharp.Tests/Tests/PCGExtendedTests.cs" Line="70" Column="40" />
+      <File FileName="PCGSharp/Source/PCGSeed.cs" Line="28" Column="30" />
+      <File FileName="PCGSharp.Tests/Tests/PCGTests.cs" Line="59" Column="36" />
+      <File FileName="PCGSharp.Tests/Tests/Helpers/RandomHelpers.cs" Line="4" Column="41" />
+      <File FileName="PCGSharp/Properties/AssemblyInfo.cs" Line="18" Column="49" />
+    </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State name="__root__">
+          <Node name="PCGSharp" expanded="True">
+            <Node name="PCGSharp.Tests" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="../../Modules/SFModules/Libraries/SFCore/Source/EmotionAI/Core/FactionDatabase/FactionDatabaseNew.cs" line="157" offsetX="353" offsetY="2652" expression="value" liveUpdate="False" />
+    <Watch file="../../Modules/SFModules/Libraries/SFCore/Source/EmotionAI/Core/FactionDatabase/FactionDatabaseNew.cs" line="234" offsetX="446" offsetY="3961" expression="ddata" liveUpdate="False" />
+    <Watch file="../../Modules/SFModules/Libraries/SFCore/Source/EmotionAI/Core/FactionDatabase/FactionDatabaseNew.cs" line="289" offsetX="304" offsetY="4896" expression="_factions" liveUpdate="False" />
+    <Watch file="../CrystalAI/CrystalAI/Source/Random/PCGRandom.cs" line="388" offsetX="404" offsetY="6579" expression="_data" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+</Properties>
