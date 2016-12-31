@@ -6,7 +6,7 @@
 PCG (Permuted Congruential Generator) Extended is a C# port from C++ of a part of the extended PCG family of
 generators presented in "PCG: A Family of Simple Fast Space-Efficient Statistically Good
 Algorithms for Random Number Generation" by Melissa E. O'Neill. The code follows closely the one 
-made available by O'Neill at her [site](http://www.pcg-random.org/using-pcg-cpp.html)
+made available by O'Neill at her [site](http://www.pcg-random.org/using-pcg-cpp.html).
 To understand how exactly this generator works read [this paper](http://www.pcg-random.org/pdf/toms-oneill-pcg-family-v1.02.pdf) its a fun read, enjoy!
 
 ## Fun Fact About PCG Extended
@@ -64,7 +64,7 @@ var rnd = new PCGExtended(seed, sequence, tablePow2, advancePow2);
 ## API
 
 The random number generation API for both versions of PCG is identical and is identical to System.Random for 
-the methods that are shared. As reference these are public methods in [PCG](PCGSharp/Source/PCG.cs) and [PCGExtended](PCGSharp/Source/PCGExtended.cs).
+the methods that are shared. The public API is self explanatory listed here for convenience.
 
 ```csharp
 public int Next();
@@ -125,6 +125,59 @@ public bool[] NextBools(int count);
 ```
 
 ## Running the tests
+PCGSharp is using NUnit for unit tests, so all standard methods of running the tests apply. If you're not familiar with NUnit have 
+all look [here](https://www.nunit.org/). The most important part of the PCGSharp test suite is the ```CorrectnessTest()```! This tests my implementation against the [original version of PCG Extened in C++](https://github.com/imneme/pcg-cpp) for [PCGExtended](PCGSharp/Source/PCGExtended.cs) and the [minimal C implementation](https://github.com/imneme/pcg-c-basic) for [PCG](PCGSharp/Source/PCG.cs). The correctness test, along with the rest of the test suite, is located in ```PCGSharp.Tests/Tests```. The data used to run the correctness tests can be found in ```PCGSharp.Tests/Data```. If you would like to create your own set of data to cross-validate the implementation of PCG and PCGExtened, you can download the original version of [PCG Extended](https://github.com/imneme/pcg-cpp) and use the following file to generate the same or a different set of data files. **If you use a different seed than 42 don't forget to update the tests!**
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <map>
+#include <random>
+#include <cmath>
+
+#include "pcg_random.hpp"
+
+int main()
+{
+    // This was used to generate the test files in the Data/ folder. "pcg_random.hpp" can be downloaded
+    // from O'Neill's website: http://www.pcg-random.org/download.html
+    int seed = 42;
+    const pcg_detail::bitcount_t mtable_pow2 = 10; // This controls the equidistribution
+    // This has 2 values in the reference code 16 and 32, although any value that is greater or equal
+    // than mtable_pow2 and smaller or equal to 32 (for 32-bit generators) should be fine. The larger
+    // this value is the less often the internal table is advanced, which can make the generator
+    // faster. In my epxeriments I didn't see any dramatic changes in performance, so I would prefer 
+    // a value of 16 for this, but to each his own. 
+    const pcg_detail::bitcount_t madvance_pow2 = 32;
+    pcg_engines::ext_setseq_xsh_rr_64_32<mtable_pow2,madvance_pow2,true> rng(seed);
+    
+    int N = 10000;
+    std::ofstream myfile;
+    std::string filename("/!CHANGE_ME!/pcg32_k");
+    filename += "_table_pow2_" + std::to_string(mtable_pow2);
+    filename += "_advance_pow2_" + std::to_string(madvance_pow2);
+    filename += "_seed_" + std::to_string(seed) + ".txt";
+    myfile.open(filename);
+    for (int n = 0; n < N; ++n) {
+        unsigned int v = rng();
+        myfile << v << "\n";
+    }
+    myfile.close();
+}
+```
+As of the time of this writing, the [original version of PCG Extened in C++](https://github.com/imneme/pcg-cpp) had a 
+minor ```typedef``` bug, namely at lines 1703 and 1704 of the [template header](https://github.com/imneme/pcg-cpp/blob/master/include/pcg_random.hpp)
+```cpp
+typedef pcg_engines::ext_setseq_xsh_rr_64_32<6,16,true>     pcg32_k2;
+typedef pcg_engines::ext_oneseq_xsh_rs_64_32<6,32,true>     pcg32_k2_fast;
+```
+should be
+```cpp
+typedef pcg_engines::ext_setseq_xsh_rr_64_32<1,16,true>     pcg32_k2;
+typedef pcg_engines::ext_oneseq_xsh_rs_64_32<1,32,true>     pcg32_k2_fast;
+```
 
 
 ## License
