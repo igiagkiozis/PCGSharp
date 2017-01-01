@@ -20,9 +20,7 @@
 //  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 //  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
 using System;
-using System.Web;
 using NUnit.Framework;
 
 
@@ -32,11 +30,11 @@ namespace PCGSharp.Tests {
   public class PcgTests {
 
     const int N = 10000;
-    private Pcg Rng;
+    Pcg _rng;
 
     [TestFixtureSetUp]
     public void Initialize() {
-      Rng = Pcg.Default;
+      _rng = Pcg.Default;
     }
 
     [Test]
@@ -49,6 +47,7 @@ namespace PCGSharp.Tests {
     public void StaticConstructorTest() {
       var rng = Pcg.Default;
       Assert.IsNotNull(rng);
+      Assert.AreEqual(rng, _rng);
     }
 
     [Test]
@@ -103,14 +102,14 @@ namespace PCGSharp.Tests {
     [Test]
     public void NextTest() {
       for(int i = 0; i < N; i++) {
-        var aVal = Rng.Next();
+        var aVal = _rng.Next();
         Assert.That(aVal >= 0);
       }
     }
 
     [Test]
     public void NextIntsTest() {
-      var vals = Rng.NextInts(N);
+      var vals = _rng.NextInts(N);
       foreach(var v in vals) {
         Assert.That(v >= 0);
       }
@@ -118,7 +117,7 @@ namespace PCGSharp.Tests {
 
     [Test]
     public void NextIntsUpperBoundTest() {
-      var vals = Rng.NextInts(N, 10);
+      var vals = _rng.NextInts(N, 10);
       foreach(var v in vals) {
         Assert.That(v >= 0);
         Assert.That(v < 10);
@@ -126,69 +125,62 @@ namespace PCGSharp.Tests {
     }
 
     [Test]
-    public void NextFloatTest() {
+    public void NextThrowsIfUpperBoundNegativeTest() {
+      Assert.Throws<ArgumentException>(() => _rng.Next(-1));
+    }
+
+        [Test]
+    public void NextMaxLessThanMinThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.Next(10, 1));
+    }
+
+    [Test]
+    public void NextIntsIntervalTest() {
+      var list = _rng.NextInts(N, -4, 6);
       for(int i = 0; i < N; i++) {
-        var v = Rng.NextFloat();
-        Assert.That(v >= 0f);
-        Assert.That(v <= 1.0f);
+        Assert.That(list[i] >= -4);
+        Assert.That(list[i] < 6);
       }
     }
 
     [Test]
-    public void NextDoubleTest() {
+    public void NextIntUpperBoundTest() {
+      var maxV = 10;
+      var pcg = new Pcg(42);
+      var lbCount = 0;
+      var ubCount = 0;
       for(int i = 0; i < N; i++) {
-        var v = Rng.NextDouble();
-        Assert.That(v >= 0.0);
-        Assert.That(v <= 1.0);
+        var aVal = pcg.Next(maxV);
+        Assert.That(aVal >= 0);
+        Assert.That(aVal < maxV);
+        if(aVal == 0)
+          lbCount++;
+        if(aVal == (maxV - 1))
+          ubCount++;
       }
+      Assert.That(lbCount > 0);
+      Assert.That(ubCount > 0);
     }
 
     [Test]
-    public void PeriodPow2Test() {
-      Assert.AreEqual(64, Rng.PeriodPow2());
-    }
-
-    [Test]
-    public void SetStreamTest() {
-      Rng.SetStream(0);
-      Console.WriteLine(Rng.CurrentStream());
-      Assert.That(Rng.CurrentStream() == 0);
-      Rng.SetStream(1);
-      Assert.That(Rng.CurrentStream() == 1);
-    }
-
-    [Test]
-    public void NextByteTest() {
+    public void NextIntIntervalTest() {
+      var minV = -20;
+      var maxV = 10;
+      var pcg = new Pcg(42);
+      var lbCount = 0;
+      var ubCount = 0;
       for(int i = 0; i < N; i++) {
-        var val = Convert.ToInt32(Rng.NextByte());
-        Assert.That(val >= 0);
-        Assert.That(val <= 255);
+        var aVal = pcg.Next(minV, maxV);
+        Assert.That(aVal >= minV);
+        Assert.That(aVal < maxV);
+        if(aVal == minV)
+          lbCount++;
+        if(aVal == (maxV - 1))
+          ubCount++;
       }
+      Assert.That(lbCount > 0);
+      Assert.That(ubCount > 0);
     }
-
-    [Test]
-    public void NextBytesTest() {
-      Assert.That(Rng.NextBytes(N).Length == N);
-    }
-
-    [Test]
-    public void NextBoolTest() {
-      for(int i = 0; i < N; i++) {
-        var val = Convert.ToInt32(Rng.NextBool());
-        Assert.That(val == 0 || val == 1);
-      }
-    }
-
-    [Test]
-    public void NextBoolsTest() {
-      Assert.That(Rng.NextBools(N).Length == N);
-    }
-
-    [Test]
-    public void NextBoolsThrowsWhenZeroCountTest() {
-      Assert.Throws<ArgumentException>(() => Rng.NextBools(0));
-    }
-  
 
     [Test]
     public void NextIntsZeroCountThrowsTest() {
@@ -197,70 +189,99 @@ namespace PCGSharp.Tests {
     }
 
     [Test]
-    public void NextUIntUpperBoundTest() {
-      for(int i = 0; i < N; i++) {
-        var aVal = Rng.NextUInt(10);
-        Assert.That(aVal < 10);
-      }
+    public void NextIntsUpperBoundZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextInts(0, 10));
     }
 
     [Test]
-    public void NextIntsIntervalTest() {
-      var list = Rng.NextInts(N, -4, 6);
+    public void NextIntsIntervalZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextInts(0, 10, 20));
+    }
+
+    [Test]
+    public void NextUIntsTest() {
+      Assert.That(_rng.NextUInts(N).Length == N);
+    }
+
+    [Test]
+    public void NextUIntIntervalMaxLessThanMinThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextUInt(20, 10));
+    }
+
+    [Test]
+    public void NextUIntsUpperBoundZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextUInts(0, 20));
+    }
+
+    [Test]
+    public void NextUIntsIntervalZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextUInts(0, 10, 20));
+    }
+
+    [Test]
+    public void NextUIntUpperBoundTest() {
       for(int i = 0; i < N; i++) {
-        Assert.That(list[i] >= -4);
-        Assert.That(list[i] < 6);
+        var aVal = _rng.NextUInt(10);
+        Assert.That(aVal < 10);
       }
     }
 
     [Test]
     public void NextUIntTest() {
       for(int i = 0; i < N; i++) {
-        var aVal = Rng.NextUInt(10, 15);
+        var aVal = _rng.NextUInt(10, 15);
         Assert.That(aVal >= 10);
         Assert.That(aVal < 15);
       }
     }
 
     [Test]
+    public void NextUIntsUpperBoundTest() {
+      var list = _rng.NextUInts(N, 4);
+      foreach(var v in list) {
+        Assert.That(v < 4);
+      }
+    }
+
+    [Test]
+    public void NextUIntsIntervalTest() {
+      var list = _rng.NextUInts(N, 44, 55);
+      foreach(var v in list) {
+        Assert.That(v >= 44);
+        Assert.That(v < 55);
+      }
+    }
+
+    [Test]
     public void NextUIntsZeroCountThrowsTest() {
-      Assert.Throws<ArgumentException>(() => Rng.NextUInts(0));
+      Assert.Throws<ArgumentException>(() => _rng.NextUInts(0));
+    }
+
+    [Test]
+    public void NextFloatTest() {
+      for(int i = 0; i < N; i++) {
+        var v = _rng.NextFloat();
+        Assert.That(v >= 0f);
+        Assert.That(v <= 1.0f);
+      }
+    }
+
+    [Test]
+    public void NextFloatMaxLessThanMinThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextFloat(10f, 1f));
     }
 
     [Test]
     public void NextFloatsZeroCountThrowsTest() {
-      Assert.Throws<ArgumentException>(() => Rng.NextFloats(0));
+      Assert.Throws<ArgumentException>(() => _rng.NextFloats(0));
     }
 
     [Test]
     public void NextFloatsUpperBoundTest() {
-      var list = Rng.NextFloats(N, 3.3f);
+      var list = _rng.NextFloats(N, 3.3f);
       foreach(var v in list) {
         Assert.That(v >= 0f);
         Assert.That(v <= 3.3f);
-      }
-    }
-
-    [Test]
-    public void NextDoublesZeroCountThrowsTest() {
-      Assert.Throws<ArgumentException>(() => Rng.NextDoubles(0));
-    }
-
-    [Test]
-    public void NextDoublesUpperBoundTest() {
-      var list = Rng.NextDoubles(N, 4.4);
-      foreach(var v in list) {
-        Assert.That(v >= 0.0);
-        Assert.That(v <= 4.4);
-      }
-    }
-
-    [Test]
-    public void NextDoublesIntervalTest() {
-      var list = Rng.NextDoubles(N, -1.1, 1.1);
-      foreach(var v in list) {
-        Assert.That(v >= -1.1);
-        Assert.That(v <= 1.1);
       }
     }
 
@@ -298,31 +319,34 @@ namespace PCGSharp.Tests {
     }
 
     [Test]
-    public void NextUIntsUpperBoundTest() {
-      var list = Rng.NextUInts(N, 4);
-      foreach(var v in list) {
-        Assert.That(v < 4);
-      }
+    public void NextFloatsTest() {
+      Assert.That(_rng.NextFloats(N).Length == N);
     }
 
     [Test]
-    public void NextUIntsIntervalTest() {
-      var list = Rng.NextUInts(N, 44, 55);
-      foreach(var v in list) {
-        Assert.That(v >= 44);
-        Assert.That(v < 55);
-      }
+    public void NextFloatUpperBoundLessThanZeroThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextFloat(-3.4f));
+    }
+
+    [Test]
+    public void NextFloatsUpperBoundZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextFloats(0, 1f));
+    }
+
+    [Test]
+    public void NextFloatsIntervalZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextFloats(0, 1f, 2f));
     }
 
     [Test]
     public void NextFloatsIntervalTest() {
-      var list = Rng.NextFloats(N, -4.4f, 8.8f);
+      var list = _rng.NextFloats(N, -4.4f, 8.8f);
       foreach(var v in list) {
         Assert.That(v >= -4.4f);
         Assert.That(v <= 8.8f);
       }
     }
-    
+
     static object[] _nextFloatMeanTestCases = new object[] { 1f, 2f, 4.3f, 10f, 1000f, 10000000f };
     [Test, TestCaseSource("_nextFloatMeanTestCases")]
     public void NextFloatMeanTest(float val) {
@@ -336,6 +360,63 @@ namespace PCGSharp.Tests {
       }
       var mean = rsum / N;
       Assert.That(mean, Is.EqualTo(0.0f).Within(lTol));
+    }
+
+    [Test]
+    public void NextDoubleTest() {
+      for(int i = 0; i < N; i++) {
+        var v = _rng.NextDouble();
+        Assert.That(v >= 0.0);
+        Assert.That(v <= 1.0);
+      }
+    }
+
+    [Test]
+    public void NextDoublesTest() {
+      Assert.That(_rng.NextDoubles(N).Length == N);
+    }
+
+    [Test]
+    public void NextDoubleUpperBoundNegativeThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextDouble(-1.0));
+    }
+
+    [Test]
+    public void NextDoubleMaxLessThanMinThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextDouble(10.0, 1.0));
+    }
+
+    [Test]
+    public void NextDoublesUpperBoundZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextDoubles(0, 1.0));
+    }
+
+    [Test]
+    public void NextDoublesIntervalZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextDoubles(0, 1.0, 2.0));
+    }
+
+    [Test]
+    public void NextDoublesZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextDoubles(0));
+    }
+
+    [Test]
+    public void NextDoublesUpperBoundTest() {
+      var list = _rng.NextDoubles(N, 4.4);
+      foreach(var v in list) {
+        Assert.That(v >= 0.0);
+        Assert.That(v <= 4.4);
+      }
+    }
+
+    [Test]
+    public void NextDoublesIntervalTest() {
+      var list = _rng.NextDoubles(N, -1.1, 1.1);
+      foreach(var v in list) {
+        Assert.That(v >= -1.1);
+        Assert.That(v <= 1.1);
+      }
     }
 
     [Test]
@@ -382,47 +463,59 @@ namespace PCGSharp.Tests {
       for(int i = 0; i < N; i++) {
         rsum += pcg.NextDouble(minV, maxV);
       }
-      var mean = rsum / (float)N;
+      var mean = rsum / N;
       Assert.That(mean, Is.EqualTo(0.0f).Within(lTol));
     }
 
     [Test]
-    public void NextIntUpperBoundTest() {
-      var maxV = 10;
-      var pcg = new Pcg(42);
-      var lbCount = 0;
-      var ubCount = 0;
+    public void NextByteTest() {
       for(int i = 0; i < N; i++) {
-        var aVal = pcg.Next(maxV);
-        Assert.That(aVal >= 0);
-        Assert.That(aVal < maxV);
-        if(aVal == 0)
-          lbCount++;
-        if(aVal == (maxV - 1))
-          ubCount++;
+        var val = Convert.ToInt32(_rng.NextByte());
+        Assert.That(val >= 0);
+        Assert.That(val <= 255);
       }
-      Assert.That(lbCount > 0);
-      Assert.That(ubCount > 0);
     }
 
     [Test]
-    public void NextIntIntervalTest() {
-      var minV = -20;
-      var maxV = 10;
-      var pcg = new Pcg(42);
-      var lbCount = 0;
-      var ubCount = 0;
+    public void NextBytesTest() {
+      Assert.That(_rng.NextBytes(N).Length == N);
+    }
+
+    [Test]
+    public void NextBytesZeroCountThrowsTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextBytes(0));
+    }
+
+    [Test]
+    public void NextBoolTest() {
       for(int i = 0; i < N; i++) {
-        var aVal = pcg.Next(minV, maxV);
-        Assert.That(aVal >= minV);
-        Assert.That(aVal < maxV);
-        if(aVal == minV)
-          lbCount++;
-        if(aVal == (maxV - 1))
-          ubCount++;
+        var val = Convert.ToInt32(_rng.NextBool());
+        Assert.That(val == 0 || val == 1);
       }
-      Assert.That(lbCount > 0);
-      Assert.That(ubCount > 0);
+    }
+
+    [Test]
+    public void NextBoolsTest() {
+      Assert.That(_rng.NextBools(N).Length == N);
+    }
+
+    [Test]
+    public void NextBoolsThrowsWhenZeroCountTest() {
+      Assert.Throws<ArgumentException>(() => _rng.NextBools(0));
+    }
+
+    [Test]
+    public void SetStreamTest() {
+      _rng.SetStream(0);
+      Console.WriteLine(_rng.CurrentStream());
+      Assert.That(_rng.CurrentStream() == 0);
+      _rng.SetStream(1);
+      Assert.That(_rng.CurrentStream() == 1);
+    }
+
+    [Test]
+    public void PeriodPow2Test() {
+      Assert.AreEqual(64, _rng.PeriodPow2());
     }
 
   }

@@ -134,6 +134,9 @@ namespace PCGSharp {
     }
 
     public int Next(int minInclusive, int maxExclusive) {
+      if(maxExclusive <= minInclusive)
+        throw new ArgumentException("MaxExclusive cannot be smaller or equal to MinInclusive");
+
       uint uMaxExclusive = unchecked((uint)(maxExclusive - minInclusive));
       uint threshold = (uint)(-uMaxExclusive) % uMaxExclusive;
 
@@ -200,7 +203,7 @@ namespace PCGSharp {
       uint xorShifted = (uint)(((oldState >> 18) ^ oldState) >> 27);
       uint lhs = (xorShifted >> rot) | (xorShifted << ((-rot) & 31));
 
-      uint result = (lhs ^ rhs);
+      uint result = lhs ^ rhs;
       return result;
     }
 
@@ -396,7 +399,7 @@ namespace PCGSharp {
     }
 
     public int Equidistribution() {
-      return (1 << _tablePow2);
+      return 1 << _tablePow2;
     }
 
     public int EquidistributionPow2() {
@@ -404,7 +407,7 @@ namespace PCGSharp {
     }
 
     public int PeriodPow2() {
-      return (1 << _tablePow2) + 64;
+      return (1 << _tablePow2)*32 + 64;
     }
 
     public void SetStream(int sequence) {
@@ -412,9 +415,13 @@ namespace PCGSharp {
     }
 
     public void SetStream(ulong sequence) {
+      // The increment must be odd.
       _increment = (sequence << 1) | 1;
     }
 
+    public ulong CurrentStream() {
+      return _increment >> 1;
+    }
 
     public PcgExtended() : this(PCGSeed.GuidBasedSeed(), ShiftedIncrement) {
     }
@@ -422,31 +429,39 @@ namespace PCGSharp {
     public PcgExtended(int seed) : this((ulong)seed, ShiftedIncrement) {
     }
 
+    public PcgExtended(ulong seed) : this(seed, ShiftedIncrement) {
+    }
+
     public PcgExtended(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
     }
 
-    public PcgExtended(int seed, int tablePow2, int advancePow2) {
-      _tablePow2 = tablePow2;
-      _advancePow2 = advancePow2;
-      Initialize((ulong)seed, ShiftedIncrement);
+    public PcgExtended(ulong seed, ulong sequence) {
+      Initialize(seed, sequence);
     }
 
-    public PcgExtended(int seed, int sequence, int tablePow2, int advancePow2) {
+    public PcgExtended(int seed, int tablePow2, int advancePow2)
+    : this((ulong)seed, tablePow2, advancePow2) {
+      //_tablePow2 = tablePow2;
+      //_advancePow2 = advancePow2;
+      //Initialize((ulong)seed, ShiftedIncrement);
+    }
+
+    public PcgExtended(ulong seed, int tablePow2, int advancePow2) {
       _tablePow2 = tablePow2;
       _advancePow2 = advancePow2;
-      Initialize((ulong)seed, (ulong)sequence);
+      Initialize(seed, ShiftedIncrement);
+    }
+
+    public PcgExtended(int seed, int sequence, int tablePow2, int advancePow2) 
+    : this((ulong)seed, (ulong)sequence, tablePow2, advancePow2) {
+      //_tablePow2 = tablePow2;
+      //_advancePow2 = advancePow2;
+      //Initialize((ulong)seed, (ulong)sequence);
     }
 
     public PcgExtended(ulong seed, ulong sequence, int tablePow2, int advancePow2) {
       _tablePow2 = tablePow2;
       _advancePow2 = advancePow2;
-      Initialize(seed, sequence);
-    }
-
-    public PcgExtended(ulong seed) : this(seed, ShiftedIncrement) {
-    }
-
-    public PcgExtended(ulong seed, ulong sequence) {
       Initialize(seed, sequence);
     }
 

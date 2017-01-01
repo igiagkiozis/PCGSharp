@@ -78,14 +78,7 @@ namespace PCGSharp {
     /// <summary>
     /// Default instance.
     /// </summary>
-    public static Pcg Default {
-      get {
-        if(_defaultInstance == null) {
-          _defaultInstance = new Pcg(PCGSeed.GuidBasedSeed(),ShiftedIncrement);
-        }
-        return _defaultInstance;
-      }
-    }
+    public static Pcg Default => _defaultInstance ?? (_defaultInstance = new Pcg(PCGSeed.GuidBasedSeed()));
 
     public int Next() {
       uint result = NextUInt();
@@ -107,6 +100,9 @@ namespace PCGSharp {
     }
 
     public int Next(int minInclusive, int maxExclusive) {
+      if(maxExclusive <= minInclusive)
+        throw new ArgumentException("MaxExclusive must be larger than MinInclusive");
+
       uint uMaxExclusive = unchecked((uint)(maxExclusive - minInclusive));
       uint threshold = (uint)(-uMaxExclusive) % uMaxExclusive;
 
@@ -122,7 +118,7 @@ namespace PCGSharp {
         throw new ArgumentException("Zero count");
 
       var resultA = new int[count];
-      for(int i = 0; i < count; i++) {
+      for(var i = 0; i < count; i++) {
         resultA[i] = Next();
       }
       return resultA;
@@ -131,8 +127,6 @@ namespace PCGSharp {
     public int[] NextInts(int count, int maxExclusive) {
       if(count <= 0)
         throw new ArgumentException("Zero count");
-      if(maxExclusive <= 0)
-        throw new ArgumentException("Max Exclusive must be positive");
 
       var resultA = new int[count];
       for(int i = 0; i < count; i++) {
@@ -224,7 +218,7 @@ namespace PCGSharp {
 
     public float NextFloat(float maxInclusive) {
       if(maxInclusive <= 0)
-        throw new ArgumentException("Max must be larger than 0");
+        throw new ArgumentException("MaxInclusive must be larger than 0");
 
       return (float)(NextUInt() * ToDouble01) * maxInclusive;
     }
@@ -270,21 +264,21 @@ namespace PCGSharp {
     }
 
     public double NextDouble() {
-      return (NextUInt() * ToDouble01);
+      return NextUInt() * ToDouble01;
     }
 
     public double NextDouble(double maxInclusive) {
       if(maxInclusive <= 0)
         throw new ArgumentException("Max must be larger than 0");
 
-      return (NextUInt() * ToDouble01) * maxInclusive;
+      return NextUInt() * ToDouble01 * maxInclusive;
     }
 
     public double NextDouble(double minInclusive, double maxInclusive) {
       if(maxInclusive <= minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
-      return (NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
+      return NextUInt() * ToDouble01 * (maxInclusive-minInclusive) + minInclusive;
     }
 
     public double[] NextDoubles(int count) {
@@ -321,7 +315,7 @@ namespace PCGSharp {
     }
 
     public byte NextByte() {
-      uint result = NextUInt();
+      var result = NextUInt();
       return (byte)(result % 256);
     }
 
@@ -330,15 +324,15 @@ namespace PCGSharp {
         throw new ArgumentException("Zero count");
 
       var resultA = new byte[count];
-      for(int i = 0; i < count; i++) {
+      for(var i = 0; i < count; i++) {
         resultA[i] = NextByte();
       }
       return resultA;
     }
 
     public bool NextBool() {      
-      uint result = NextUInt();
-      return ((result % 2) == 1);
+      var result = NextUInt();
+      return result % 2 == 1;
     }
 
     public bool[] NextBools(int count) {
@@ -346,7 +340,7 @@ namespace PCGSharp {
         throw new ArgumentException("Zero count");
 
       var resultA = new bool[count];
-      for(int i = 0; i < count; i++) {
+      for(var i = 0; i < count; i++) {
         resultA[i] = NextBool();
       }
       return resultA;
@@ -365,22 +359,19 @@ namespace PCGSharp {
     }
 
     public ulong CurrentStream() {
-      return (_increment >> 1);
+      return _increment >> 1;
     }
 
-    public Pcg() : this(PCGSeed.GuidBasedSeed(), ShiftedIncrement) {
+    public Pcg() : this(PCGSeed.GuidBasedSeed()) {
     }
 
-    public Pcg(int seed) : this((ulong)seed, ShiftedIncrement) {
+    public Pcg(int seed) : this((ulong)seed) {
     }
 
     public Pcg(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
     }
-
-    public Pcg(ulong seed) : this(seed, ShiftedIncrement) {
-    }
-
-    public Pcg(ulong seed, ulong sequence) {
+    
+    public Pcg(ulong seed, ulong sequence = ShiftedIncrement) {
       Initialize(seed, sequence);
     }
 
