@@ -3,6 +3,6 @@ PCGSharp/bin
 PCGSharp/obj
 PCGSharp.Tests/bin
 PCGSharp.Tests/obj
-
+*.userprefs
 *.DotSettings
 *.DotSettings.user
