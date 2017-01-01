@@ -32,18 +32,18 @@ PCGSharp implements two flavors of PCG, see [PCG](PCGSharp/Source/PCG.cs) and [P
 **Instanced**
 Assuming you have added the appropriate files (or dll) to your project you can create a PCG instance in the same way you would for System.Random
 ```csharp
-var rnd = new PCG(); 
+var rnd = new Pcg(); 
 ```
 That's it. 
 
 **Static**
 Both [PCG](PCGSharp/Source/PCG.cs) and [PCGExtended](PCGSharp/Source/PCGExtended.cs) have a static invocation
 ```csharp
-var rnd = PCG.Default;
+var rnd = Pcg.Default;
 ```
 or 
 ```csharp
-var rnd = PCGExtended.Default;
+var rnd = PcgExtended.Default;
 ```
 When used like that a singleton will be created per thread, i.e. each thread will have its own version of PCG. 
 
@@ -61,7 +61,7 @@ int tablePow2 = 10;
 // I think this will eventually be removed from the public API, but if you're curious as to
 // what this does, see http://www.pcg-random.org/using-pcg-cpp.html
 int advancePow2 = 16;
-var rnd = new PCGExtended(seed, sequence, tablePow2, advancePow2);
+var rnd = new PcgExtended(seed, sequence, tablePow2, advancePow2);
 ```
 
 ## API
