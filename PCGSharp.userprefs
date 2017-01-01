@@ -1,11 +1,16 @@
 ﻿<Properties StartupItem="PCGSharp/PCGSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PCGSharp/Source/PCGExtended.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PCGSharp/Source/PcgSeed.cs">
     <Files>
-      <File FileName="PCGSharp/Source/PCG.cs" Line="132" Column="26" />
-      <File FileName="PCGSharp/Source/PCGSeed.cs" Line="1" Column="1" />
-      <File FileName="PCGSharp/Source/PCGExtended.cs" Line="225" Column="45" />
+      <File FileName="PCGSharp/Source/PcgSeed.cs" Line="28" Column="30" />
     </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State name="__root__">
+          <Node name="PCGSharp" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
