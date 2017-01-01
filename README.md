@@ -27,7 +27,7 @@ its mean density (at its current volume) would be so high that the entire univer
 its weight into a black hole.
 
 ## Getting Started
-PCGSharp implements two flavors of PCG, see [Pcg](PCGSharp/Source/PCG.cs) and [PcgExtended](PCGSharp/Source/PCGExtended.cs). The first version ([Pcg](PCGSharp/Source/PCG.cs)) is simple, fast and has much better statistical properties compared with System.Random, and [other well known(!) generators](http://www.pcg-random.org/pdf/toms-oneill-pcg-family-v1.02.pdf). It also supports multiple streams and has a period of 2^64. All in all its a good general purpose (pseudo-)random number generator, so if in doubt use this one. [Pcg](PCGSharp/Source/PCG.cs) can be used in two ways: 
+PCGSharp implements two flavors of PCG, see [Pcg](PCGSharp/Source/Pcg.cs) and [PcgExtended](PCGSharp/Source/PcgExtended.cs). The first version ([Pcg](PCGSharp/Source/Pcg.cs)) is simple, fast and has much better statistical properties compared with System.Random, and [other well known(!) generators](http://www.pcg-random.org/pdf/toms-oneill-pcg-family-v1.02.pdf). It also supports multiple streams and has a period of 2^64. All in all its a good general purpose (pseudo-)random number generator, so if in doubt use this one. [Pcg](PCGSharp/Source/Pcg.cs) can be used in two ways: 
 
 **Instanced**
 Assuming you have added the appropriate files (or dll) to your project you can create a PCG instance in the same way you would for System.Random
@@ -37,7 +37,7 @@ var rnd = new Pcg();
 That's it. 
 
 **Static**
-Both [PCG](PCGSharp/Source/PCG.cs) and [PcgExtended](PCGSharp/Source/PCGExtended.cs) have a static invocation
+Both [Pcg](PCGSharp/Source/Pcg.cs) and [PcgExtended](PCGSharp/Source/PcgExtended.cs) have a static invocation
 ```csharp
 var rnd = Pcg.Default;
 ```
@@ -47,7 +47,7 @@ var rnd = PcgExtended.Default;
 ```
 When used like that a singleton will be created per thread, i.e. each thread will have its own version of PCG. 
 
-[PcgExtended](PCGSharp/Source/PCGExtended.cs) is more configurable compared with [Pcg](PCGSharp/Source/PCG.cs) and most importantly can create generators with almost any dimensional equidistribution. Note, a 2-dimensionally equidistributed generator can produce random tuples of length 2 that are equidistributed in two dimensions (uniform random distribution in 2d space). That property essentially minimizes the likelihood of correlations between tuples (or vectors) of dimension 2. A 1024-dimensional equidistribution generator has the same property for vectors with dimension upto 1024, etc. [PcgExtended](PCGSharp/Source/PCGExtended.cs) with 1024-dimensional equidistribution is still faster than System.Random, at least on the machines I have access to.
+[PcgExtended](PCGSharp/Source/PcgExtended.cs) is more configurable compared with [Pcg](PCGSharp/Source/Pcg.cs) and most importantly can create generators with almost any dimensional equidistribution. Note, a 2-dimensionally equidistributed generator can produce random tuples of length 2 that are equidistributed in two dimensions (uniform random distribution in 2d space). That property essentially minimizes the likelihood of correlations between tuples (or vectors) of dimension 2. A 1024-dimensional equidistribution generator has the same property for vectors with dimension upto 1024, etc. [PcgExtended](PCGSharp/Source/PcgExtended.cs) with 1024-dimensional equidistribution is still faster than System.Random, at least on the machines I have access to.
 
 You can create a PCG with 1024-dimensional distribution as follows
 ```csharp
@@ -129,7 +129,7 @@ public bool[] NextBools(int count);
 
 ## Running the tests
 PCGSharp is using NUnit for unit tests, so all standard methods of running the tests apply. If you're not familiar with NUnit have 
-a look [here](https://www.nunit.org/). The most important part of the PCGSharp test suite is the ```CorrectnessTest()```! This tests my implementation against the [original version of PCG Extened in C++](https://github.com/imneme/pcg-cpp) for [PCGExtended](PCGSharp/Source/PCGExtended.cs) and the [minimal C implementation](https://github.com/imneme/pcg-c-basic) for [Pcg](PCGSharp/Source/PCG.cs). The correctness test, along with the rest of the test suite, is located in ```PCGSharp.Tests/Tests```. The data used to run the correctness tests can be found in ```PCGSharp.Tests/Data```. If you would like to create your own set of data to cross-validate the implementation of Pcg and PcgExtened, you can download the original version of [PCG Extended](https://github.com/imneme/pcg-cpp) and use the **following code** to generate the same or a different set of data files. **If you use a different seed than 42 don't forget to update the tests!**
+a look [here](https://www.nunit.org/). The most important part of the PCGSharp test suite is the ```CorrectnessTest()```! This tests my implementation against the [original version of PCG Extened in C++](https://github.com/imneme/pcg-cpp) for [PcgExtended](PCGSharp/Source/PcgExtended.cs) and the [minimal C implementation](https://github.com/imneme/pcg-c-basic) for [Pcg](PCGSharp/Source/Pcg.cs). The correctness test, along with the rest of the test suite, is located in ```PCGSharp.Tests/Tests```. The data used to run the correctness tests can be found in ```PCGSharp.Tests/Data```. If you would like to create your own set of data to cross-validate the implementation of Pcg and PcgExtened, you can download the original version of [PCG Extended](https://github.com/imneme/pcg-cpp) and use the **following code** to generate the same or a different set of data files. **If you use a different seed than 42 don't forget to update the tests!**
 
 ```cpp
 #include <iostream>
