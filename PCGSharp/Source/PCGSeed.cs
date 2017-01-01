@@ -25,7 +25,7 @@ using System;
 
 namespace PCGSharp {
 
-  public static class PCGSeed {
+  public static class PcgSeed {
 
     /// <summary>
     /// Provides a time-dependent seed value, matching the default behavior of System.Random.

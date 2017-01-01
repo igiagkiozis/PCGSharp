@@ -76,41 +76,41 @@ namespace PCGSharp {
   /// its mean density (at its current volume) would be so high that the entire universe would collapse unto
   /// its weight into a black hole.
   /// </summary>
-  public class PCGExtended {
-    ulong _table_mask;
-    ulong _tick_mask;
-    int _table_pow2 = 10;
-    int _advance_pow2 = 16;
-    int _table_size;
+  public class PcgExtended {
+    ulong _tableMask;
+    ulong _tickMask;
+    int _tablePow2 = 10;
+    int _advancePow2 = 16;
+    int _tableSize;
 
     ulong _state;
     // This shifted to the left and or'ed with 1ul results in the default increment.
-    const ulong _shiftedIncrement = 721347520444481703ul;
+    const ulong ShiftedIncrement = 721347520444481703ul;
     ulong _increment = 1442695040888963407ul;
-    const ulong _multiplier = 6364136223846793005ul;
-    const uint _pcg_multiplier = 747796405u;
-    const uint _pcg_increment = 2891336453u;
-    const uint _mcg_multiplier = 277803737u;
-    const uint _mcg_unmultiplier = 2897767785u;
+    const ulong Multiplier = 6364136223846793005ul;
+    const uint PcgMultiplier = 747796405u;
+    const uint PcgIncrement = 2891336453u;
+    const uint McgMultiplier = 277803737u;
+    const uint McgUnmultiplier = 2897767785u;
 
     // 1 / (uint.MaxValue + 1)
-    const double _toDouble01 = 1.0 / 4294967296.0;
+    const double ToDouble01 = 1.0 / 4294967296.0;
     uint[] _data;
 
     // This attribute ensures that every thread will get its own instance of PCG.
     // An alternative, since PCG supports streams, is to use a different stream per
     // thread. 
     [ThreadStatic]
-    static PCGExtended DefaultInstance;
+    static PcgExtended _defaultInstance;
     /// <summary>
     /// Default instance.
     /// </summary>
-    public static PCGExtended Default {
+    public static PcgExtended Default {
       get {
-        if(DefaultInstance == null) {
-          DefaultInstance = new PCGExtended(PCGSeed.GuidBasedSeed(), _shiftedIncrement);
+        if(_defaultInstance == null) {
+          _defaultInstance = new PcgExtended(PcgSeed.GuidBasedSeed(), ShiftedIncrement);
         }
-        return DefaultInstance;
+        return _defaultInstance;
       }
     }
       
@@ -134,6 +134,9 @@ namespace PCGSharp {
     }
 
     public int Next(int minInclusive, int maxExclusive) {
+      if(maxExclusive <= minInclusive)
+        throw new ArgumentException("MaxExclusive cannot be smaller or equal to MinInclusive");
+
       uint uMaxExclusive = unchecked((uint)(maxExclusive - minInclusive));
       uint threshold = (uint)(-uMaxExclusive) % uMaxExclusive;
 
@@ -180,11 +183,11 @@ namespace PCGSharp {
     }
 
     public uint NextUInt() {
-      var index = _state & _table_mask;
-      bool tick = (_state & _tick_mask) == 0ul;
+      var index = _state & _tableMask;
+      bool tick = (_state & _tickMask) == 0ul;
       if(tick) {
         bool carry = false;
-        for(int i = 0; i < _table_size; i++) {
+        for(int i = 0; i < _tableSize; i++) {
           if(carry)
             carry = ExternalStep(ref _data[i], i + 1);
 
@@ -195,12 +198,12 @@ namespace PCGSharp {
       uint rhs = _data[index];
 
       ulong oldState = _state;
-      _state = unchecked(_state * _multiplier + _increment);
+      _state = unchecked(_state * Multiplier + _increment);
       int rot = (int)(oldState >> 59);
       uint xorShifted = (uint)(((oldState >> 18) ^ oldState) >> 27);
       uint lhs = (xorShifted >> rot) | (xorShifted << ((-rot) & 31));
 
-      uint result = (lhs ^ rhs);
+      uint result = lhs ^ rhs;
       return result;
     }
 
@@ -262,21 +265,21 @@ namespace PCGSharp {
     }
 
     public float NextFloat() {
-      return (float)(NextUInt() * _toDouble01);
+      return (float)(NextUInt() * ToDouble01);
     }
 
     public float NextFloat(float maxInclusive) {
       if(maxInclusive <= 0)
         throw new ArgumentException("Max must be larger than 0");
       
-      return (float)(NextUInt() * _toDouble01) * maxInclusive;
+      return (float)(NextUInt() * ToDouble01) * maxInclusive;
     }
 
     public float NextFloat(float minInclusive, float maxInclusive) {
       if(maxInclusive <= minInclusive)
         throw new ArgumentException("Max must be larger than min");
       
-      return (float)(NextUInt() * _toDouble01) * (maxInclusive-minInclusive) + minInclusive;
+      return (float)(NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
     }
 
     public float[] NextFloats(int count) {
@@ -313,21 +316,21 @@ namespace PCGSharp {
     }
 
     public double NextDouble() {
-      return (NextUInt() * _toDouble01);
+      return (NextUInt() * ToDouble01);
     }
 
     public double NextDouble(double maxInclusive) {
       if(maxInclusive <= 0)
         throw new ArgumentException("Max must be larger than 0");
 
-      return (NextUInt() * _toDouble01) * maxInclusive;
+      return (NextUInt() * ToDouble01) * maxInclusive;
     }
 
     public double NextDouble(double minInclusive, double maxInclusive) {
       if(maxInclusive <= minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
-      return (NextUInt() * _toDouble01) * (maxInclusive-minInclusive) + minInclusive;
+      return (NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
     }
 
     public double[] NextDoubles(int count) {
@@ -396,15 +399,15 @@ namespace PCGSharp {
     }
 
     public int Equidistribution() {
-      return (1 << _table_pow2);
+      return 1 << _tablePow2;
     }
 
     public int EquidistributionPow2() {
-      return _table_pow2;
+      return _tablePow2;
     }
 
     public int PeriodPow2() {
-      return (1 << _table_pow2) + 64;
+      return (1 << _tablePow2)*32 + 64;
     }
 
     public void SetStream(int sequence) {
@@ -412,41 +415,53 @@ namespace PCGSharp {
     }
 
     public void SetStream(ulong sequence) {
+      // The increment must be odd.
       _increment = (sequence << 1) | 1;
     }
 
-
-    public PCGExtended() : this(PCGSeed.GuidBasedSeed(), _shiftedIncrement) {
+    public ulong CurrentStream() {
+      return _increment >> 1;
     }
 
-    public PCGExtended(int seed) : this((ulong)seed, _shiftedIncrement) {
+    public PcgExtended() : this(PcgSeed.GuidBasedSeed(), ShiftedIncrement) {
     }
 
-    public PCGExtended(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
+    public PcgExtended(int seed) : this((ulong)seed, ShiftedIncrement) {
     }
 
-    public PCGExtended(int seed, int tablePow2, int advancePow2) {
-      _table_pow2 = tablePow2;
-      _advance_pow2 = advancePow2;
-      Initialize((ulong)seed, _shiftedIncrement);
+    public PcgExtended(ulong seed) : this(seed, ShiftedIncrement) {
     }
 
-    public PCGExtended(int seed, int sequence, int tablePow2, int advancePow2) {
-      _table_pow2 = tablePow2;
-      _advance_pow2 = advancePow2;
-      Initialize((ulong)seed, (ulong)sequence);
+    public PcgExtended(int seed, int sequence) : this((ulong)seed, (ulong)sequence) {
     }
 
-    public PCGExtended(ulong seed, ulong sequence, int tablePow2, int advancePow2) {
-      _table_pow2 = tablePow2;
-      _advance_pow2 = advancePow2;
+    public PcgExtended(ulong seed, ulong sequence) {
       Initialize(seed, sequence);
     }
 
-    public PCGExtended(ulong seed) : this(seed, _shiftedIncrement) {
+    public PcgExtended(int seed, int tablePow2, int advancePow2)
+    : this((ulong)seed, tablePow2, advancePow2) {
+      //_tablePow2 = tablePow2;
+      //_advancePow2 = advancePow2;
+      //Initialize((ulong)seed, ShiftedIncrement);
     }
 
-    public PCGExtended(ulong seed, ulong sequence) {
+    public PcgExtended(ulong seed, int tablePow2, int advancePow2) {
+      _tablePow2 = tablePow2;
+      _advancePow2 = advancePow2;
+      Initialize(seed, ShiftedIncrement);
+    }
+
+    public PcgExtended(int seed, int sequence, int tablePow2, int advancePow2) 
+    : this((ulong)seed, (ulong)sequence, tablePow2, advancePow2) {
+      //_tablePow2 = tablePow2;
+      //_advancePow2 = advancePow2;
+      //Initialize((ulong)seed, (ulong)sequence);
+    }
+
+    public PcgExtended(ulong seed, ulong sequence, int tablePow2, int advancePow2) {
+      _tablePow2 = tablePow2;
+      _advancePow2 = advancePow2;
       Initialize(seed, sequence);
     }
 
@@ -455,39 +470,39 @@ namespace PCGSharp {
       _state = seed + _increment;
       _state = Bump(_state);
 
-      _table_size = (1 << _table_pow2);
-      _data = new uint[_table_size];
+      _tableSize = (1 << _tablePow2);
+      _data = new uint[_tableSize];
       // The correct way to initialize this is to use a seed sequence, but this 
       // is more convenient. 
       uint xdiff = InternalNext() - InternalNext();
-      for(int i = 0; i < _table_size; i++) {
+      for(int i = 0; i < _tableSize; i++) {
         _data[i] = (InternalNext() ^ xdiff);
       }
 
-      _table_mask = (1ul << _table_pow2) - 1ul;
-      _tick_mask = (1ul << _advance_pow2) - 1ul; 
+      _tableMask = (1ul << _tablePow2) - 1ul;
+      _tickMask = (1ul << _advancePow2) - 1ul; 
     }
 
     uint InternalNext() {
       ulong oldState = _state;
       // Overflow is part of the design.
-      _state = unchecked(oldState * _multiplier + _increment);
+      _state = unchecked(oldState * Multiplier + _increment);
       uint xorShifted = (uint)(((oldState >> 18) ^ oldState) >> 27);
       int rot = (int)(oldState >> 59);
       return ( (xorShifted >> rot) | (xorShifted << ((-rot) & 31)) );
     }
 
     ulong Bump(ulong state) {
-      return (state * _multiplier + _increment);
+      return (state * Multiplier + _increment);
     }
 
     bool ExternalStep(ref uint randval, int i) {
       uint state = UnOutput(randval);
-      state = unchecked(state * _pcg_multiplier + _pcg_increment + (uint)i * 2u);
+      state = unchecked(state * PcgMultiplier + PcgIncrement + (uint)i * 2u);
 
       int rshift = (int)(state >> 28) + 4;
       state ^= (state >> rshift);
-      state *= _mcg_multiplier;
+      state *= McgMultiplier;
       uint result = state ^ (state >> 22);
       randval = result;
 
@@ -497,7 +512,7 @@ namespace PCGSharp {
     uint UnOutput(uint @internal) {
       // unxorshift
       @internal ^= (@internal >> 22);
-      @internal *= _mcg_unmultiplier;
+      @internal *= McgUnmultiplier;
       int rshift = (int)(@internal >> 28);
       @internal = UnXorShift(@internal, 32, 4 + rshift);
       return @internal;

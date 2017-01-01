@@ -21,42 +21,40 @@
 //  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 
 
 namespace PCGSharp.Tests {
-
+  
   public static class RandomHelpers {
-
-    public static List<uint> ReadPCGOutput(int seed) {
+    public static List<uint> ReadPcgOutput(int seed) {
       var dir = Path.GetDirectoryName(typeof(RandomHelpers).Assembly.Location);
-      var fileName = string.Format("{0}/Data/pcg32_seed_{1}.txt", dir, seed);
-      return ReadPCGValuesFile(fileName);
-    }
-
-    public static List<uint> ReadPCGExtendedOutput(int seed, int tablePow2, int advancePow2) {
+      var fileName = Path.Combine(dir, Path.Combine("Data", string.Format("pcg32_seed_{0}.txt", seed)));
+      return ReadPcgValuesFile(fileName);
+    }    
+    
+    public static List<uint> ReadPcgExtendedOutput(int seed, int tablePow2, int advancePow2) {
       var dir = Path.GetDirectoryName(typeof(RandomHelpers).Assembly.Location);
-      var fileName = string.Format("{0}/Data/pcg32_k_table_pow2_{1}_advance_pow2_{2}_seed_{3}.txt", 
-        dir, tablePow2, advancePow2, seed);
-      return ReadPCGValuesFile(fileName);
+      var dataFile = string.Format("pcg32_k_table_pow2_{0}_advance_pow2_{1}_seed_{2}.txt", tablePow2, advancePow2, seed);
+      var fileName = Path.Combine(dir, Path.Combine("Data", dataFile));
+      return ReadPcgValuesFile(fileName);
     }
-
-    static List<uint> ReadPCGValuesFile(string fileName) {
+    
+    static List<uint> ReadPcgValuesFile(string fileName) {
       var list = new List<uint>();
       try {        
         using(TextReader reader = File.OpenText(fileName)) {
           do {
-            string uintString = reader.ReadLine();
+            var uintString = reader.ReadLine();
             if(string.IsNullOrEmpty(uintString))
               break;
-            uint x = uint.Parse(uintString);
+            var x = uint.Parse(uintString);
             list.Add(x);
-
           } while(true);
         }
       } catch {
-        Console.WriteLine("File {0}, does not exist!", fileName);
+        Console.WriteLine("File {0}, does not exist!", fileName);        
       }
       return list;
     }

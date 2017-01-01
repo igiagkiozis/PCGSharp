@@ -1,4 +1,8 @@
+.vs
 PCGSharp/bin
 PCGSharp/obj
 PCGSharp.Tests/bin
 PCGSharp.Tests/obj
+
+*.DotSettings
+*.DotSettings.user
