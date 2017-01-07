@@ -78,7 +78,9 @@ namespace PCGSharp {
     /// <summary>
     /// Default instance.
     /// </summary>
-    public static Pcg Default => _defaultInstance ?? (_defaultInstance = new Pcg(PcgSeed.GuidBasedSeed()));
+    public static Pcg Default { 
+      get { return _defaultInstance ?? (_defaultInstance = new Pcg(PcgSeed.GuidBasedSeed())); } 
+    }
 
     public int Next() {
       uint result = NextUInt();
@@ -224,7 +226,7 @@ namespace PCGSharp {
     }
 
     public float NextFloat(float minInclusive, float maxInclusive) {
-      if(maxInclusive <= minInclusive)
+      if(maxInclusive < minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
       return (float)(NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
@@ -275,7 +277,7 @@ namespace PCGSharp {
     }
 
     public double NextDouble(double minInclusive, double maxInclusive) {
-      if(maxInclusive <= minInclusive)
+      if(maxInclusive < minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
       return NextUInt() * ToDouble01 * (maxInclusive-minInclusive) + minInclusive;

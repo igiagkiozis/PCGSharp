@@ -276,7 +276,7 @@ namespace PCGSharp {
     }
 
     public float NextFloat(float minInclusive, float maxInclusive) {
-      if(maxInclusive <= minInclusive)
+      if(maxInclusive < minInclusive)
         throw new ArgumentException("Max must be larger than min");
       
       return (float)(NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
@@ -327,7 +327,7 @@ namespace PCGSharp {
     }
 
     public double NextDouble(double minInclusive, double maxInclusive) {
-      if(maxInclusive <= minInclusive)
+      if(maxInclusive < minInclusive)
         throw new ArgumentException("Max must be larger than min");
 
       return (NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
