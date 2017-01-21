@@ -94,6 +94,7 @@ namespace PCGSharp {
     const uint McgUnmultiplier = 2897767785u;
 
     // 1 / (uint.MaxValue + 1)
+    const float ToFloat01 = 1.0f / 4294967296.0f;
     const double ToDouble01 = 1.0 / 4294967296.0;
     uint[] _data;
 
@@ -265,21 +266,21 @@ namespace PCGSharp {
     }
 
     public float NextFloat() {
-      return (float)(NextUInt() * ToDouble01);
+      return (NextUInt() * ToFloat01);
     }
 
     public float NextFloat(float maxInclusive) {
       if(maxInclusive <= 0)
         throw new ArgumentException("Max must be larger than 0");
       
-      return (float)(NextUInt() * ToDouble01) * maxInclusive;
+      return (NextUInt() * ToFloat01) * maxInclusive;
     }
 
     public float NextFloat(float minInclusive, float maxInclusive) {
       if(maxInclusive < minInclusive)
         throw new ArgumentException("Max must be larger than min");
       
-      return (float)(NextUInt() * ToDouble01) * (maxInclusive-minInclusive) + minInclusive;
+      return (NextUInt() * ToFloat01) * (maxInclusive-minInclusive) + minInclusive;
     }
 
     public float[] NextFloats(int count) {
