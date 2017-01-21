@@ -96,6 +96,7 @@ namespace PCGSharp {
     // 1 / (uint.MaxValue + 1)
     const float ToFloat01 = 1.0f / 4294967296.0f;
     const double ToDouble01 = 1.0 / 4294967296.0;
+    const uint HalfUint = uint.MaxValue / 2;
     uint[] _data;
 
     // This attribute ensures that every thread will get its own instance of PCG.
@@ -384,8 +385,7 @@ namespace PCGSharp {
     }
       
     public bool NextBool() {      
-      uint result = NextUInt();
-      return ((result % 2) == 1);
+      return NextUInt() < HalfUint;
     }
 
     public bool[] NextBools(int count) {
