@@ -32,7 +32,7 @@ namespace PCGSharp.Tests {
     const int N = 10000;
     Pcg _rng;
 
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void Initialize() {
       _rng = Pcg.Default;
     }
